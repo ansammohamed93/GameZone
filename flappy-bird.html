@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flappy bird</title>
+<link rel="stylesheet" href="css/flappy-bird.css">
+</head>
+<body>
+
+<!-- background emojis -->
+<div id="bg-flappy"></div>
+
+<div id="gameWrapper">
+  <h1>Flappy Bird</h1>
+  <div id="ui">Score: <span id="score">0</span> | Level: <span id="level">1</span></div>
+  <canvas id="flappyCanvas" width="560" height="540"></canvas>
+  <div id="buttons">
+    <button id="restartBtn">Restart</button>
+    <button id="pauseBtn">Pause</button>
+    <button id="myGamesBtn">My Games</button>
+  </div>
+</div>
+
+<!-- popup -->
+<div id="popup">
+  <div id="popupContent">
+    <h2 id="popupTitle">Game Over</h2>
+    <p id="popupMsg">Hard Luck! Your score: <span id="finalScore">0</span></p>
+    <button id="tryAgainBtn">Try Again</button>
+    <button id="popupMyGames">My Games</button>
+  </div>
+</div>
+
+<script src="js/flappy-bird.js"></script>
+
+</body>
+</html>

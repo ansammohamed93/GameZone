@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>API Games</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+/* Scrollbar */
+::-webkit-scrollbar { width:12px; }
+::-webkit-scrollbar-track { background:#4e074ee7; border-radius:10px; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg,#00b3b3,#b300b3,#00b380,#b30066,#00b3b3); border-radius:10px; border:2px solid rgba(0, 0, 0, 0.071);}
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg,#00ffff,#ff00ff,#00ffcc,#ff0099,#00ffff); }
+
+body {
+  background: black;
+  color: #fff;
+  font-family: sans-serif;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  position: relative;
+  height: 100%;
+}
+.star {
+  position: absolute;
+  border-radius: 50%;
+  z-index: -1;
+  animation: twinkle 2s infinite alternate;
+}
+@keyframes twinkle {
+  0% { opacity: 0.3; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-2px); }
+  100% { opacity: 0.3; transform: translateY(0); }
+}
+
+h1 { 
+  margin-top: 20px;
+  color: #ff00ff; 
+  font-size: 2.7rem; 
+  text-shadow: 0 0 20px #ff00ff; 
+  text-align:center;
+  margin-bottom: 100px; 
+}
+h2.section-title { 
+  color: #ef5fec; 
+  text-align:center; 
+  margin-bottom: 30px; 
+  text-shadow:0 0 10px #a64aff;
+}
+
+.section-border {
+  border: 2px solid #a64aff;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 40px;
+  box-shadow: 0 0 25px #a64aff;
+  transition: 0.5s;
+  animation: neonGlow 3s linear infinite alternate;
+}
+.section-border:hover { box-shadow: 0 0 50px #a64aff; }
+
+@keyframes neonGlow {
+  0% { box-shadow: 0 0 15px #00ffff, 0 0 20px #ff00ff, 0 0 15px #00ffcc, 0 0 20px #ff0099; }
+  50% { box-shadow: 0 0 30px #00ffff, 0 0 40px #ff00ff, 0 0 30px #00ffcc, 0 0 40px #ff0099; }
+  100% { box-shadow: 0 0 15px #00ffff, 0 0 20px #ff00ff, 0 0 15px #00ffcc, 0 0 20px #ff0099; }
+}
+
+.game-card {
+  background:#1a1a2e; 
+  border-radius:10px;
+  overflow:hidden;
+  transition:.3s; 
+  position: relative;
+  cursor:pointer;
+  border:1px solid #4a4aff;
+  box-shadow: 0 0 15px #00ffff, 0 0 20px #ff00ff;
+}
+.card-img-container { position: relative; overflow: hidden; border-radius: 10px; }
+.card-img-container img { width: 100%; height: 180px; object-fit: cover; transition: transform 0.5s; }
+.card-img-container:hover img { transform: scale(1.1); }
+
+.overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  padding: 10px;
+  transform: translateY(100%);
+  transition: transform 0.3s;
+}
+.card-img-container:hover .overlay { transform: translateY(0); }
+
+.card-title { color:#fff; margin:0; font-size:1rem; }
+.card-text { color:#ccc; font-size:0.8rem; margin:0; }
+
+.btn-neon {
+  background: #4a4aff;
+  color: #fff;
+  border: 1px solid #a64aff;
+  text-shadow: 0 0 5px #fff;
+  box-shadow: 0 0 10px #a64aff;
+  transition: all 0.3s;
+  display:inline-block;
+  text-decoration:none;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}
+.btn-neon:hover {
+  background: #7c5fff;
+  box-shadow: 0 0 20px #a64aff, 0 0 30px #7c5fff;
+}
+
+/* Overlay */
+#game-detail {
+  position: fixed;
+  top:0; left:0; width:100vw; height:100vh;
+  background: rgba(0,0,0,0.95);
+  display:flex; justify-content:center; align-items:center;
+  opacity:0; pointer-events:none; transition:opacity 0.3s ease;
+  z-index:9999;
+}
+#game-detail.active { opacity:1; pointer-events:auto; }
+
+#game-detail .overlay-fullscreen {
+  background:#1a1a2e;
+  border-radius:15px;
+  padding:20px;
+  max-width:900px;
+  width:90%;
+  box-shadow:0 0 50px #a64aff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  position:relative;
+}
+#game-detail img { width:60%; border-radius:15px; box-shadow:0 0 30px #a64aff; margin-bottom:20px; }
+#game-detail h2 { color:#00ffff; margin-bottom:10px; text-align:center; text-shadow:0 0 15px #00ffff,0 0 30px #ff00ff; }
+#game-detail p { color:#fff; margin:2px 0; text-align:center; }
+#game-detail .overlay-close {
+  position:absolute; top:10px; right:15px; font-size:30px;
+  color:#fff; background:none; border:none; text-shadow:0 0 10px #00ffff,0 0 20px #ff00ff; cursor:pointer;
+}
+#game-detail .overlay-info { text-align:center; margin-bottom:10px; }
+
+/* Sidebar */
+#sidebar {
+  position: fixed;
+  top: 100px;
+  left: -150px;
+  width: 170px;
+  background: linear-gradient(180deg, #1a1a2e, #11111a);
+  box-shadow: 0 0 20px #7c5fff;
+  padding: 10px;
+  border-radius: 10px;
+  transition: left 0.3s;
+  z-index: 1000;
+}
+#sidebar:hover { left: 0; }
+#sidebar .list-group-item {
+  border: 1px solid #7c5fff;
+  margin-bottom: 5px;
+  border-radius: 8px;
+  cursor:pointer;
+}
+#sidebar li:hover {
+  background: #7c5fff;
+  box-shadow: 0 0 15px #a64aff;
+  transform: scale(1.05);
+}
+
+/* Mobile */
+#mobile-menu-btn { display:none; }
+#mobile-sidebar { display:none; }
+
+/* Back to index button */
+#back-to-index {
+  position: fixed;
+  top: 30px;
+  right: 15px;
+  z-index: 1003;
+  display: block;
+}
+@media(max-width:768px){ 
+  #sidebar { display:none; }
+  #mobile-menu-btn { display:block; }
+  #mobile-sidebar { display:block; position: fixed; top:0; left:0; width:250px; height:100%; background: linear-gradient(180deg, #1a1a2e, #11111a); padding:20px; z-index:1002; box-shadow:0 0 30px #7c5fff; display:none;}
+  .col-12.col-sm-6.col-md-3 { flex: 0 0 48%; max-width: 48%; margin:1%; }
+}
+@media(max-width:500px){ .col-12.col-sm-6.col-md-3 { flex: 0 0 100%; max-width:100%; margin-bottom:20px; } }
+</style>
+</head>
+<body>
+
+<!-- Back to Home Button -->
+<button id="back-to-index" class="btn-neon ">✕</button>
+
+
+<!-- Mobile Menu Button -->
+<div id="mobile-menu-btn">☰</div>
+<div id="mobile-sidebar">
+  <ul class="list-group p-0">
+    <li class="list-group-item btn-neon my-2" data-target="home">🏠 Home</li>
+    <li class="list-group-item btn-neon my-2" data-target="action">⚔️ Action</li>
+    <li class="list-group-item btn-neon my-2" data-target="shooter">🎯 Shooter</li>
+    <li class="list-group-item btn-neon my-2" data-target="racing">🏎️ Racing</li>
+    <li class="list-group-item btn-neon my-2" data-target="role-playing-games-rpg">🧙 RPG</li>
+    <li class="list-group-item btn-neon my-2" data-target="strategy">🛡️ Strategy</li>
+    <li class="list-group-item btn-neon my-2" data-target="sports">⚽ Sports</li>
+  </ul>
+</div>
+
+<div class="container py-5">
+  <h1>🎮 API Games</h1>
+  <div id="sidebar">
+    <h4 class="text-center mb-3" style="color:#ff00ff;text-shadow:0 0 10px #a64aff;">🏠 Menu</h4>
+    <ul class="list-group p-0">
+      <li class="list-group-item btn-neon my-2" data-target="home">🏠 Home</li>
+      <li class="list-group-item btn-neon my-2" data-target="action">⚔️ Action</li>
+      <li class="list-group-item btn-neon my-2" data-target="shooter">🎯 Shooter</li>
+      <li class="list-group-item btn-neon my-2" data-target="racing">🏎️ Racing</li>
+      <li class="list-group-item btn-neon my-2" data-target="role-playing-games-rpg">🧙 RPG</li>
+      <li class="list-group-item btn-neon my-2" data-target="strategy">🛡️ Strategy</li>
+      <li class="list-group-item btn-neon my-2" data-target="sports">⚽ Sports</li>
+    </ul>
+  </div>
+  <div id="gamesContainer"></div>
+</div>
+
+<div id="game-detail"></div>
+
+<script>
+const apiKey = "fa6974ddc7704833b926a0fcfd602ee5";
+const categories = [
+  {slug:"action", title:"Action", bg:"#11111a"},
+  {slug:"shooter", title:"Shooter", bg:"#1a1111"},
+  {slug:"racing", title:"Racing", bg:"#111a11"},
+  {slug:"role-playing-games-rpg", title:"RPG", bg:"#1a1a1a"},
+  {slug:"strategy", title:"Strategy", bg:"#111a1a"},
+  {slug:"sports", title:"Sports", bg:"#1a1a11"}
+];
+
+// Stars
+window.addEventListener('load', () => {
+  const totalStars = 250;
+  const pageWidth = document.body.scrollWidth;
+  const pageHeight = document.body.scrollHeight;
+  for (let i = 0; i < totalStars; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    const size = Math.random()*3 + 1;
+    star.style.width = size + 'px';
+    star.style.height = size + 'px';
+    star.style.background = `hsl(${Math.random()*360}, 80%, 80%)`;
+    star.style.left = Math.random()*pageWidth+'px';
+    star.style.top = Math.random()*pageHeight+'px';
+    document.body.appendChild(star);
+  }
+});
+
+// Load Sections
+async function loadSection(catSlug, title, bg) {
+  const url = `https://api.rawg.io/api/games?key=${apiKey}&genres=${catSlug}&page_size=12`;
+  const resp = await fetch(url);
+  const data = await resp.json();
+  const games = data.results;
+  const section = document.createElement("div");
+  section.className = "section-border";
+  section.id = catSlug;
+  section.style.background = bg;
+  section.innerHTML = `<h2 class="section-title">${title}</h2>`;
+  const row = document.createElement("div");
+  row.className = "row g-4";
+  games.forEach(game => {
+    const img = game.background_image || "";
+    const gameName = game.name;
+    const released = game.released || "N/A";
+    const rating = game.rating || "N/A";
+    const genres = game.genres.map(g=>g.name).join(', ');
+    const slug = game.slug;
+    const col = document.createElement("div");
+    col.className = "col-12 col-sm-6 col-md-3";
+    col.innerHTML = `
+      <div class="card game-card h-100" data-slug="${slug}" data-name="${gameName}" data-img="${img}" data-released="${released}" data-rating="${rating}" data-genres="${genres}">
+        <div class="card-img-container">
+          <img src="${img}" alt="${gameName}" />
+          <div class="overlay">
+            <h5 class="card-title">${gameName}</h5>
+            <p class="card-text">📅 ${released}</p>
+            <p class="card-text">⭐ ${rating}</p>
+            <p class="card-text">🎮 ${genres}</p>
+          </div>
+        </div>
+        <div class="text-center mt-2">
+          <button class="btn-neon btn-details">Details</button>
+        </div>
+      </div>
+    `;
+    row.appendChild(col);
+  });
+  section.appendChild(row);
+  document.getElementById("gamesContainer").appendChild(section);
+}
+
+async function loadAll() {
+  for(const cat of categories){
+    await loadSection(cat.slug, cat.title, cat.bg);
+  }
+}
+loadAll();
+
+// Overlay
+function showGameOverlay(gameData) {
+  const overlay = document.getElementById('game-detail');
+  overlay.innerHTML = `
+    <div class="overlay-fullscreen">
+      <img src="${gameData.img}" />
+      <div class="overlay-info">
+        <h2>${gameData.name}</h2>
+        <p>📅 Released: ${gameData.released}</p>
+        <p>⭐ Rating: ${gameData.rating}</p>
+        <p>🎮 Genres: ${gameData.genres}</p>
+      </div>
+      <a href="https://rawg.io/games/${gameData.slug}" target="_blank" class="btn btn-neon">Go to Game</a>
+      <button class="overlay-close">✕</button>
+    </div>
+  `;
+  overlay.classList.add('active');
+  overlay.querySelector('.overlay-close').onclick = () => overlay.classList.remove('active');
+}
+
+// Card click
+document.addEventListener('click', e => {
+  const card = e.target.closest('.game-card');
+  if(!card) return;
+  const gameData = {
+    slug: card.getAttribute('data-slug'),
+    name: card.getAttribute('data-name'),
+    img: card.getAttribute('data-img'),
+    released: card.getAttribute('data-released'),
+    rating: card.getAttribute('data-rating'),
+    genres: card.getAttribute('data-genres')
+  };
+  if(e.target.classList.contains('btn-details') || e.target.closest('.game-card')) {
+    showGameOverlay(gameData);
+  }
+});
+
+// Sidebar scroll
+document.querySelectorAll("#sidebar li, #mobile-sidebar li").forEach(item => {
+  item.addEventListener("click", () => {
+    const targetId = item.getAttribute("data-target");
+    if(targetId === "home"){
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      const target = document.getElementById(targetId);
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    if(window.innerWidth < 768) document.getElementById('mobile-sidebar').style.display='none';
+  });
+});
+
+// Mobile menu toggle
+document.getElementById('mobile-menu-btn').addEventListener('click', ()=>{
+  const menu = document.getElementById('mobile-sidebar');
+  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+});
+
+// Back to index button
+document.getElementById('back-to-index').addEventListener('click', () => {
+  window.location.href = "index.html"; // عدلي الرابط حسب اسم صفحتك الرئيسية
+});
+</script>
+</body>
+</html>

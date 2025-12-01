@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Game</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="css/memory.css">
+</head>
+<body>
+     <div class="overlay">   
+    </div>
+  <h1>Memory Game</h1>
+  <div id="gameBoard"></div>
+<div class="game-buttons mt-4">
+  <button id="restartBtn" class="btn btn-neon">Restart</button>
+  <a href="my-games.html" class="btn btn-neon">My Games</a>
+</div>
+
+  <!-- Sounds -->
+  <audio id="clickSound" src="audio/mixkit-game-ball-tap-2073.wav"></audio>
+  <audio id="matchSound" src="audio/mixkit-video-game-treasure-2066.wav"></audio>
+ 
+  <audio id="winSound" src="audio/mixkit-completion-of-a-level-2063.wav"></audio>
+  
+  <script src="js/memory.js"></script>
+</body>
+</html>

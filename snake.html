@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Snake Game </title>
+<link rel="stylesheet" href="css/snake.css">
+</head>
+<body>
+<div id="bg-snakes"></div>
+
+<div class="app">
+  <h1>Snake Game</h1>
+
+  <div class="hud">
+    <div class="pill">Score: <span id="score">0</span></div>
+    <div class="pill">Level: <span id="level">1</span></div>
+    <div class="pill">Target: <span id="target">5</span></div>
+    <div class="pill">Lives: <span id="lives" class="hearts">❤❤❤</span></div>
+  </div>
+
+  <div id="gameWrap" >
+    <canvas id="canvas" width="480" height="480"></canvas>
+
+    <div class="controls">
+      <button id="pauseBtn" class="btn ghost">Pause</button>
+      <button id="restartBtn" class="btn">Restart</button>
+      <button id="myGamesBtn" class="btn ghost">My Games</button>
+    </div>
+    <div class="hint">Use Arrow keys to move • On collision you lose a life and restart the level</div>
+  </div>
+</div>
+
+<div id="modalArea" class="modal" style="display:none">
+  <div id="modalCard" class="card">
+    <h2 id="modalTitle">Level Complete!</h2>
+    <p id="modalMsg">Good job — you finished this level.</p>
+    <p class="small">Score: <span id="modalScore">0</span> • Lives left: <span id="modalLives">3</span></p>
+    <div class="row" id="modalBtns"></div>
+  </div>
+</div>
+
+<script src="js/snake.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GameZone</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css" />
+  <link rel="stylesheet" href="css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Loader -->
+  <div id="loader">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Navbar -->
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark creative-navbar fixed mt-2">
+  <div class="container">
+    <a class="navbar-brand" href="index.html"><i class="fas fa-gamepad"></i> GameZone</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse show" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+
+        <!-- My Games Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="my-games.html" role="button" data-bs-toggle="dropdown">
+            🎮 My Games
+          </a>
+          <ul class="dropdown-menu ">
+            <li><a class="dropdown-item" href="memory.html">Memory Cards</a></li>
+            <li><a class="dropdown-item" href="whack-a-mole.html">Whack-a-Mole</a></li>
+            <li><a class="dropdown-item" href="tictactoe.html">Tic Tac Toe</a></li>
+            <li><a class="dropdown-item" href="snake.html">Snake</a></li>
+            <li><a class="dropdown-item" href="maze.html">Maze</a></li>
+            <li><a class="dropdown-item" href="flappy-bird.html">Flappy Bird</a></li>
+          </ul>
+        </li>
+
+        <!-- Free Games Dropdown -->
+        <li class="nav-item ">
+          <a class="nav-link " href="free-games.html" role="button" >
+            🕹 Free Games
+          </a>
+   
+        </li>
+
+        <!-- API Games Dropdown -->
+        <li class="nav-item ">
+          <a class="nav-link " href="api-games.html" role="button">
+            🌐 API Games
+          </a>
+         
+        </li>
+
+        <li class="nav-item">
+          <i id="theme-toggle" class="fa-solid fa-moon theme-icon"></i>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+  <!-- Background Icons -->
+  <div id="background-icons"></div>
+
+  <!-- Main Content -->
+<div class="container home-container pt-5">
+  <h1 id="neon-title" class="text-center mb-5">GameZone</h1>
+
+  <div class="sections-grid">
+
+    <!-- My Games -->
+    <div class="section" id="my-games" onclick="window.location.href='my-games.html';">
+      <div class="section-overlay">
+        <h2>My Games</h2>
+      </div>
+    </div>
+
+    <!-- Free Games -->
+    <div class="section" id="free-games" onclick="window.location.href='free-games.html';">
+      <div class="section-overlay">
+        <h2>Free Games</h2>
+      </div>
+    </div>
+
+    <!-- API Games -->
+    <div class="section" id="api-games" onclick="window.location.href='api-games.html';">
+      <div class="section-overlay">
+        <h2>API Games</h2>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+  <!-- Game Overlay -->
+  <div id="game-detail"></div>
+
+  <!-- Scripts -->
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/gsap.min.js"></script>
+  <script src="js/loader.js"></script>
+  <script src="js/header-neon.js"></script>
+  <script src="js/background-icons.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/main.js"></script>
+  
+</body>
+</html>

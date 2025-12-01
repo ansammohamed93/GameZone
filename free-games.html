@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Games </title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<style>
+/* Scrollbar */
+::-webkit-scrollbar { width:12px; }
+
+::-webkit-scrollbar-track { 
+  background:#5c035ce7; 
+  border-radius:10px; 
+}
+
+::-webkit-scrollbar-thumb { 
+  background: linear-gradient(180deg,#00b3b3,#b300b3,#00b380,#b30066,#00b3b3); 
+  border-radius:10px; 
+  border:2px solid rgba(0, 0, 0, 0.071);
+}
+
+::-webkit-scrollbar-thumb:hover { 
+  background: linear-gradient(180deg,#00ffff,#ff00ff,#00ffcc,#ff0099,#00ffff);
+}
+
+    body {
+      
+      font-family: 'Segoe UI', sans-serif;
+      background: url('images/neon-gaming-circuit-stockcake.jpg') no-repeat center center fixed;
+      background-size: cover;
+      overflow-x: hidden;
+      color: #fff;
+    }
+    body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* لون أسود شفاف */
+  z-index: 0;
+  pointer-events: none; /* عشان ما يعيقش التفاعل مع العناصر */
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7);
+  z-index: 0;
+  pointer-events: none;
+}
+
+
+
+
+/* Light Mode */
+body.light {
+  background: #f5f5f5;
+  color: #000;
+}
+
+/* Light/Dark Toggle Emoji */
+.mode-toggle {
+  position:fixed;
+  top:20px;
+  right:20px;
+  z-index:999;
+  font-size:2rem;
+  cursor:pointer;
+  user-select:none;
+  transition: all 0.3s;
+}
+
+/* Neon Titles */
+.section-title {
+  text-align:center;
+  font-size:3rem;
+  margin:50px 0 30px;
+  font-weight:bold;
+  animation: neonGlow 1.5s ease-in-out infinite alternate;
+}
+@keyframes neonGlow {
+  0% { text-shadow: 0 0 5px #0ff, 0 0 20px #ff00ff; }
+  100% { text-shadow: 0 0 20px #0ff, 0 0 40px #ff00ff; }
+}
+body.light .section-title {
+  text-shadow:none;
+  color:#222;
+  animation:none;
+}
+
+/* Section Background with small dots */
+.section-bg {
+  padding:50px 20px;
+  border-radius: 25px;
+  margin-bottom:50px;
+  background: rgba(0,0,0,0.9);
+  box-shadow: 0 0 20px #0ff, 0 0 40px #ff00ff;
+  position:relative;
+  overflow:hidden;
+}
+.section-bg::before {
+  content:'';
+  position:absolute;
+  width:2px;
+  height:2px;
+  background: #0ff;
+  box-shadow: 
+    50px 30px #0ff,
+    120px 70px #ff00ff,
+    200px 100px #0ff,
+    300px 50px #ff00ff,
+    400px 120px #0ff,
+    500px 200px #ff00ff,
+    600PX 300PX #0ff,
+      700px 400px #ff00ff,
+       800PX 500PX #0ff,
+        900px 160px #ff00ff, 
+         1000PX 70PX #0ff, 
+        1100px 800px #ff00ff, 
+         1200PX 190PX #0ff, 
+        1300px 100px #ff00ff;
+        
+  border-radius:50%;
+  animation: twinkle 2s infinite alternate;
+}
+@keyframes twinkle {
+  0% { opacity:0.3; }
+  100% { opacity:1; }
+}
+
+
+/* Game Cards */
+.game-card {
+  border-radius: 20px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,0.2);
+  position:relative;
+  height:300px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  background: rgba(0,0,0,0.3);
+  transition: all 0.3s;
+}
+.game-card:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 0 25px #ff00ff, 0 0 50px #00ffff;
+}
+.game-card .card-top {
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  font-size:1.2rem;
+  color:#fff;
+  position:relative;
+  text-align:center;
+  padding:10px;
+}
+.game-card .card-top::before {
+  content:'';
+  position:absolute;
+  width:100%;
+  height:100%;
+  background: linear-gradient(90deg, rgba(255,0,255,0.1), rgba(0,255,255,0.1));
+  z-index:0;
+}
+.game-card .card-top span {
+  position:relative;
+  z-index:1;
+}
+
+/* Card bottom button */
+.game-card-body {
+  padding:10px;
+  text-align:center;
+}
+.game-card-body button {
+  background: linear-gradient(90deg,#ff00ff,#00ffff);
+  border:none;
+  padding:8px 15px;
+  border-radius:10px;
+  color:#fff;
+  font-weight:bold;
+  transition: all 0.3s;
+}
+.game-card-body button:hover {
+  background: linear-gradient(90deg,#00ffff,#ff00ff);
+  color:#000;
+}
+
+/* Light Mode Card */
+body.light .game-card {
+  background:#ccc;
+  border-color:#999;
+}
+body.light .game-card .card-top {
+  color:#000;
+}
+body.light .game-card-body button {
+  background:#555;
+  color:#fff;
+}
+body.light .game-card-body button:hover {
+  background:#999;
+  color:#000;
+}
+.close-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  font-size: 2rem;
+  color: #ff00ff;
+  background: rgba(0,0,0,0.5);
+  padding: 5px 10px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+.close-btn:hover {
+  color: #00ffff;
+  background: rgba(0,0,0,0.8);
+}
+
+/* Light Mode */
+body.light {
+  background: radial-gradient(circle at top, #ffffff, #e0f7ff);
+  color: #000;
+}
+
+/* Section Background */
+body.light .section-bg {
+  background: rgba(255,255,255,0.05);
+  box-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff;
+}
+body.light .section-bg::before {
+  background: #ff00ff;
+  box-shadow: 
+    50px 30px #ff00ff,
+    120px 70px #00ffff,
+    200px 100px #ff00ff,
+    300px 50px #00ffff,
+    400px 120px #ff00ff,
+    500px 200px #00ffff;
+}
+
+/* Light Mode — Neon Gaming */
+body.light {
+  background: radial-gradient(circle at top, #ffffff, #e0f7ff);
+  color: #000;
+}
+
+/* Section Background */
+body.light .section-bg {
+  
+  background: rgba(241, 213, 213, 0.671);
+  box-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff;
+}
+
+/* Neon Game Cards */
+body.light .game-card {
+  color: white;
+  background: linear-gradient(145deg, rgba(255,0,255,0.1), rgba(0,255,255,0.1));
+  border: 1px solid #ff00ff;
+  transition: all 0.3s;
+}
+body.light .game-card:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 0 25px #ff00ff, 0 0 50px #00ffff;
+}
+
+/* Card Top */
+body.light .game-card .card-top {
+  color: #ff00ff;
+  text-shadow: 0 0 5px #ff00ff, 0 0 20px #00ffff;
+}
+
+/* Card Button */
+body.light .game-card-body button {
+  background: linear-gradient(90deg,#ff00ff,#00ffff);
+  color: #000;
+  border:none;
+  transition: all 0.3s;
+}
+body.light .game-card-body button:hover {
+  background: linear-gradient(90deg,#00ffff,#ff00ff);
+  color: #fff;
+}
+
+/* Close Button */
+body.light .close-btn {
+  color: #ff00ff;
+  background: rgba(255,255,255,0.1);
+  transition: all 0.3s;
+}
+body.light .close-btn:hover {
+  color: #00ffff;
+  background: rgba(255,255,255,0.25);
+}
+
+/* Light Mode Emoji Toggle */
+body.light .mode-toggle {
+  color: #ff00ff;
+  text-shadow: 0 0 5px #ff00ff, 0 0 20px #00ffff;
+}
+
+
+
+</style>
+</head>
+<body>
+<div class="overlay"></div>
+<div class="mode-toggle" onclick="toggleMode()">🌙</div>
+<!-- زر العودة للهوم -->
+<a href="index.html" class="close-btn">✕</a>
+
+<div class="container py-5">
+
+<script>
+const sections=[
+  {
+    title:"Action Games",
+    games:[
+      {name:"Flappy Bird", link:"https://crazygames.com/game/flappy-bird"},
+      {name:"Moto X3M", link:"https://crazygames.com/game/moto-x3m"},
+      {name:"Tank Trouble", link:"https://crazygames.com/game/tank-trouble"},
+      {name:"Stickman Hook", link:"https://crazygames.com/game/stickman-hook"},
+      {name:"Madalin Stunt Cars 2", link:"https://crazygames.com/game/madalin-stunt-cars-2"},
+      {name:"Slope", link:"https://crazygames.com/game/slope"}
+    ]
+  },
+  {
+    title:"Adventure Games",
+    games:[
+      {name:"Cut the Rope", link:"https://crazygames.com/game/cut-the-rope"},
+      {name:"Fireboy and Watergirl", link:"https://crazygames.com/game/fireboy-and-watergirl-1-forest-temple"},
+      {name:"Run 3", link:"https://crazygames.com/game/run-3"},
+      {name:"Fancy Pants Adventure", link:"https://crazygames.com/game/fancy-pants-adventure"},
+      {name:"Vex 3", link:"https://crazygames.com/game/vex-3"},
+      {name:"Adam and Eve", link:"https://crazygames.com/game/adam-and-eve-3"}
+    ]
+  },
+  {
+    title:"Puzzle Games",
+    games:[
+      {name:"2048", link:"https://crazygames.com/game/2048"},
+      {name:"Mahjong", link:"https://crazygames.com/game/mahjong"},
+      {name:"Bubble Shooter", link:"https://crazygames.com/game/bubble-shooter"},
+      {name:"Hex FRVR", link:"https://crazygames.com/game/hex-frvr"},
+      {name:"Unblock Me", link:"https://crazygames.com/game/unblock-me"},
+      {name:"IQ Ball", link:"https://crazygames.com/game/iq-ball"}
+    ]
+  },
+  {
+    title:"Racing Games",
+    games:[
+      {name:"Stunt Cars", link:"https://crazygames.com/game/stunt-cars"},
+      {name:"Madalin Cars Multiplayer", link:"https://crazygames.com/game/madalin-cars-multiplayer"},
+      {name:"Moto X3M 6", link:"https://crazygames.com/game/moto-x3m-6"},
+      {name:"Extreme Cars", link:"https://crazygames.com/game/extreme-cars"},
+      {name:"Drift Hunters", link:"https://crazygames.com/game/drift-hunters"},
+      {name:"Car Simulator Arena", link:"https://crazygames.com/game/car-simulator-arena"}
+    ]
+  },
+  {
+    title:"Sports Games",
+    games:[
+      {name:"Basketball Stars", link:"https://crazygames.com/game/basketball-stars"},
+      {name:"Soccer Skills", link:"https://crazygames.com/game/soccer-skills"},
+      {name:"Mini Golf 3D", link:"https://crazygames.com/game/mini-golf-3d"},
+      {name:"Table Tennis World Tour", link:"https://crazygames.com/game/table-tennis-world-tour"},
+      {name:"Boxing Battle", link:"https://crazygames.com/game/boxing-battle"},
+      {name:"Bowling King", link:"https://crazygames.com/game/bowling-king"}
+    ]
+  },
+  {
+    title:"Strategy Games",
+    games:[
+      {name:"Kingdom Rush", link:"https://crazygames.com/game/kingdom-rush"},
+      {name:"Bloons Tower Defense 5", link:"https://crazygames.com/game/bloons-tower-defense-5"},
+      {name:"Goodgame Empire", link:"https://crazygames.com/game/goodgame-empire"},
+      {name:"Train Station", link:"https://crazygames.com/game/train-station"},
+      {name:"Age of War", link:"https://crazygames.com/game/age-of-war"},
+      {name:"Castle Defense", link:"https://crazygames.com/game/castle-defense"}
+    ]
+  }
+];
+
+sections.forEach(section=>{
+document.write(`<section class="section-bg">
+<h2 class="section-title animate__animated animate__fadeIn">${section.title}</h2>
+<div class="row g-4 justify-content-center">`);
+section.games.forEach((g,i)=>{
+document.write(`
+<div class="col-6 col-md-4 col-lg-2">
+<div class="game-card animate__animated animate__fadeInUp">
+<div class="card-top"><span>${g.name}</span></div>
+<div class="game-card-body">
+<a href="${g.link}" target="_blank"><button>▶ Play</button></a>
+</div>
+</div>
+</div>
+`);
+});
+document.write(`</div></section>`);
+});
+
+function toggleMode(){
+  document.body.classList.toggle('light');
+  const toggle = document.querySelector('.mode-toggle');
+  toggle.textContent = document.body.classList.contains('light') ? '☀️' : '🌙';
+}
+</script>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
