@@ -1,5 +1,4 @@
-
-/* ---------- background emojis ---------- */
+/* ---------- Background emojis ---------- */
 const bgContainer = document.getElementById('bg-flappy');
 const bgEmojis = ["☁️","🌵","🕊","🪶","🐦"];
 const bgPositions = [
@@ -26,7 +25,7 @@ bgPositions.forEach((p,i)=>{
   bgContainer.appendChild(span);
 });
 
-/* ---------- Flappy Emoji ---------- */
+/* ---------- Flappy Bird Variables ---------- */
 const canvas=document.getElementById('flappyCanvas');
 const ctx=canvas.getContext('2d');
 let W=canvas.width,H=canvas.height;
@@ -37,6 +36,41 @@ const scoreEl=document.getElementById('score'),levelEl=document.getElementById('
 const popup=document.getElementById('popup'),finalScore=document.getElementById('finalScore');
 const tryAgainBtn=document.getElementById('tryAgainBtn');
 
+/* ---------- Countdown Element ---------- */
+const countdownEl = document.createElement('div');
+countdownEl.style.position = 'absolute';
+countdownEl.style.top = '50%';
+countdownEl.style.left = '50%';
+countdownEl.style.transform = 'translate(-50%, -50%)';
+countdownEl.style.fontSize = '80px';
+countdownEl.style.color = '#00e5ff';
+countdownEl.style.textShadow = '0 0 20px #ff00ff, 0 0 10px #00ffff';
+countdownEl.style.zIndex = 10;
+countdownEl.style.userSelect = 'none';
+countdownEl.style.pointerEvents = 'none';
+countdownEl.style.fontWeight = 'bold';
+document.getElementById('gameWrapper').appendChild(countdownEl);
+
+function startCountdown(callback){
+  let count = 3;
+  countdownEl.textContent = count;
+  countdownEl.style.display = 'block';
+  const interval = setInterval(()=>{
+    count--;
+    if(count > 0){
+      countdownEl.textContent = count;
+    } else {
+      countdownEl.textContent = 'GO!';
+      setTimeout(()=>{
+        countdownEl.style.display = 'none';
+        clearInterval(interval);
+        callback();
+      }, 700);
+    }
+  }, 1000);
+}
+
+/* ---------- Reset Game Variables ---------- */
 function resetGameVars(){
   pipes=[];
   frame=0;
@@ -51,7 +85,8 @@ function resetGameVars(){
   popup.style.display='none';
 }
 
-const baseSettings={speed:1.5,gap:200,spawnRate:250}; // أسهل: سرعة أبطأ، فجوة أكبر، spawn أقل
+/* ---------- Level Settings ---------- */
+const baseSettings={speed:1.5,gap:200,spawnRate:250};
 function getLevelSettings(lv){
   return {
     speed: baseSettings.speed + lv*0.3,
@@ -60,12 +95,14 @@ function getLevelSettings(lv){
   }
 }
 
+/* ---------- Pipes ---------- */
 function spawnPipe(){
   const settings=getLevelSettings(level);
   const top=Math.random()*(H-settings.gap-180)+50;
   pipes.push({x:W+40,top:top,bottom:top+settings.gap,passed:false});
 }
 
+/* ---------- Bird & Pipes Draw ---------- */
 function drawBird(){
   ctx.save();
   ctx.translate(bird.x,bird.y);
@@ -87,6 +124,7 @@ function drawPipes(){
   }
 }
 
+/* ---------- Collision ---------- */
 function checkCollision(){
   if(bird.y+bird.size/2>=H||bird.y-bird.size/2<=0) return true;
   for(const p of pipes){
@@ -97,8 +135,10 @@ function checkCollision(){
   return false;
 }
 
+/* ---------- UI Update ---------- */
 function updateUI(){scoreEl.textContent=score;levelEl.textContent=level;}
 
+/* ---------- Bird Control ---------- */
 function flap(){if(gameOver||paused)return;bird.vy=-7;bird.rot=-1;}
 
 document.addEventListener('keydown',e=>{
@@ -107,6 +147,7 @@ document.addEventListener('keydown',e=>{
 canvas.addEventListener('mousedown',()=>flap());
 canvas.addEventListener('touchstart',e=>{e.preventDefault();flap();},{passive:false});
 
+/* ---------- End Game ---------- */
 function endGame(){
   gameOver=true;
   cancelAnimationFrame(animId);
@@ -123,8 +164,9 @@ function endGame(){
   },24);
 }
 
+/* ---------- Game Loop ---------- */
 function loopFn(){
-  if(paused||gameOver)return;
+  if(paused||gameOver) return;
   frame++;
   ctx.clearRect(0,0,W,H);
   drawBird();
@@ -153,14 +195,27 @@ function loopFn(){
   animId=requestAnimationFrame(loopFn);
 }
 
-function startGame(){resetGameVars();spawnPipe();animId=requestAnimationFrame(loopFn);}
+/* ---------- Start Game ---------- */
+function startGame(){
+  resetGameVars();
+  startCountdown(()=>{
+    spawnPipe();
+    animId=requestAnimationFrame(loopFn);
+  });
+}
 
-document.getElementById('restartBtn').addEventListener('click',()=>{resetGameVars();startGame();});
-document.getElementById('tryAgainBtn').addEventListener('click',()=>{resetGameVars();startGame();});
+/* ---------- Buttons ---------- */
+document.getElementById('restartBtn').addEventListener('click',()=>{startGame();});
+document.getElementById('tryAgainBtn').addEventListener('click',()=>{startGame();});
 document.getElementById('myGamesBtn').addEventListener('click',()=>location.href='my-games.html');
 document.getElementById('popupMyGames').addEventListener('click',()=>location.href='my-games.html');
 
 const pauseBtn=document.getElementById('pauseBtn');
-pauseBtn.addEventListener('click',()=>{paused=!paused; pauseBtn.textContent=paused?'Resume':'Pause'; if(!paused) animId=requestAnimationFrame(loopFn);});
+pauseBtn.addEventListener('click',()=>{
+  paused=!paused; 
+  pauseBtn.textContent=paused?'Resume':'Pause'; 
+  if(!paused) animId=requestAnimationFrame(loopFn);
+});
 
+/* ---------- Start ---------- */
 startGame();

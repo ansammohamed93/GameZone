@@ -1,29 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Memory Game</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<link rel="stylesheet" href="css/memory.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memory Game</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: url('images/neon-gaming-highway-stockcake.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.8);
+  z-index: 0;
+  pointer-events: none;
+}
+h1 {
+  text-align: center;
+  padding: 30px;
+  font-size: 3rem;
+  color: rgb(254, 2, 195);
+  text-shadow: 0 0 50px #ff00ff, 0 0 10px #00ffff, 0 0 50px #ff00ff, 0 0 10px #00ffff;
+  position: relative;
+  z-index: 1;
+}
+#gameBoard {
+  display: grid;
+  grid-template-columns: repeat(4, 100px);
+  grid-gap: 15px;
+  justify-content: center;
+  z-index:1;
+}
+.card {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #0ff, #f0f);
+  background-size: 400% 400%;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  animation: gradientBG 8s ease infinite;
+}
+.card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(120deg, rgba(0,255,255,0.05), rgba(255,0,255,0.05), rgba(0,255,255,0.048));
+  transform: skewX(-20deg);
+  pointer-events: none;
+  transition: all 0.3s ease;
+  animation: neonLine 2s linear infinite;
+}
+@keyframes neonLine {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+.card.flipped {
+  transform: rotateY(180deg);
+}
+.card.matched {
+  animation: matchPulse 0.6s ease forwards, neonMatched 1.5s ease infinite;
+  box-shadow: 0 0 25px #0ff, 0 0 60px #f0f;
+  transform: scale(1.15);
+}
+@keyframes matchPulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.2); }
+  100% { transform: scale(1.15); }
+}
+.card:hover:not(.flipped):not(.matched) {
+  transform: scale(1.1);
+}
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.game-buttons {
+  margin-top: 30px;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  z-index:1;
+}
+.btn-neon {
+  padding: 12px 25px;
+  background: linear-gradient(#00ffff,#f0f);
+  color: black;
+  border: 2px solid #0ff;
+  font-size: 1.2rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  text-decoration: none;
+  font-weight: bold;
+  text-shadow: 0 0 10px #0ff;
+  box-shadow: 0 0 15px #0ff;
+  z-index: 1;
+}
+.btn-neon:hover {
+  background: rgba(0,255,255,0.2);
+  box-shadow: 0 0 25px #0ff, 0 0 50px #f0f;
+  transform: scale(1.1);
+}
+@media(max-width:500px){
+  #gameBoard { grid-template-columns: repeat(4, 70px); grid-gap: 10px;}
+  .card { width:70px;height:70px;font-size:1.5rem;}
+  .btn-neon { font-size:1rem; padding:10px 20px;}
+}
+</style>
 </head>
 <body>
-     <div class="overlay">   
-    </div>
-  <h1>Memory Game</h1>
-  <div id="gameBoard"></div>
+<div class="overlay"></div>
+<h1>Memory Game</h1>
+<div id="gameBoard"></div>
 <div class="game-buttons mt-4">
-  <button id="restartBtn" class="btn btn-neon">Restart</button>
-  <a href="my-games.html" class="btn btn-neon">My Games</a>
+  <button id="restartBtn" class="btn-neon">Restart</button>
+  <a href="my-games.html" class="btn-neon">My Games</a>
 </div>
 
-  <!-- Sounds -->
-  <audio id="clickSound" src="audio/mixkit-game-ball-tap-2073.wav"></audio>
-  <audio id="matchSound" src="audio/mixkit-video-game-treasure-2066.wav"></audio>
- 
-  <audio id="winSound" src="audio/mixkit-completion-of-a-level-2063.wav"></audio>
-  
-  <script src="js/memory.js"></script>
+<!-- Sounds -->
+<audio id="clickSound" src="audio/mixkit-game-ball-tap-2073.wav"></audio>
+<audio id="matchSound" src="audio/mixkit-video-game-treasure-2066.wav"></audio>
+<audio id="winSound" src="audio/mixkit-completion-of-a-level-2063.wav"></audio>
+
+<script>
+const board = document.getElementById('gameBoard');
+const symbols = ['🍎','🍌','🍇','🍒','🍉','🥝','🍍','🥑'];
+let cards = [...symbols, ...symbols];
+let firstCard = null, secondCard = null;
+let lockBoard = false;
+let matchedPairs = 0;
+const totalPairs = symbols.length;
+
+// Sounds
+const clickSound = document.getElementById('clickSound');
+const matchSound = document.getElementById('matchSound');
+const winSound = document.getElementById('winSound');
+
+// Shuffle cards
+cards.sort(() => 0.5 - Math.random());
+
+// Create cards
+cards.forEach(symbol => {
+  const card = document.createElement('div');
+  card.classList.add('card');
+  card.dataset.symbol = symbol;
+  card.addEventListener('click', flipCard);
+  board.appendChild(card);
+});
+
+function flipCard() {
+  if(lockBoard) return;
+  if(this === firstCard) return;
+  clickSound.play();
+  this.classList.add('flipped');
+  this.innerText = this.dataset.symbol;
+  if(!firstCard) { firstCard=this; return; }
+  secondCard=this;
+  checkMatch();
+}
+
+function checkMatch() {
+  if(firstCard.dataset.symbol === secondCard.dataset.symbol) {
+    firstCard.classList.add('matched');
+    secondCard.classList.add('matched');
+    matchSound.play();
+    matchedPairs++;
+    resetBoard();
+    if(matchedPairs === totalPairs) {
+      setTimeout(() => { winSound.play(); alert("You Won! 🎉"); }, 500);
+    }
+  } else {
+    lockBoard=true;
+    setTimeout(()=>{
+      firstCard.classList.remove('flipped');
+      secondCard.classList.remove('flipped');
+      firstCard.innerText='';
+      secondCard.innerText='';
+      resetBoard();
+    },1000);
+  }
+}
+
+function resetBoard(){ [firstCard,secondCard]=[null,null]; lockBoard=false; }
+
+document.getElementById("restartBtn").addEventListener("click",()=>{ location.reload(); });
+</script>
 </body>
 </html>

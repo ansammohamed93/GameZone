@@ -1,3 +1,4 @@
+
 // ===== Background emojis =====
 const bgContainer = document.getElementById("bg-snakes");
 const emojis = ["🐱","🍖","🐟","🧶"];
@@ -35,7 +36,7 @@ function createFixedBackground(){
 }
 createFixedBackground();
 
-// ===== اللعبة =====
+// ===== Game =====
 const mazeContainer = document.getElementById('maze');
 const levelDisplay = document.getElementById('level');
 const timeDisplay = document.getElementById('time');
@@ -54,16 +55,13 @@ let timeLeft = 60;
 let currentGrid = [];
 let mazeSize = 10;
 
-// ===== توليد متاهة قابلة للحل بالكامل =====
+// ===== Maze Generation =====
 function generateMaze(size){
   const grid = Array.from({length:size},()=>Array(size).fill(1));
-
-  // DFS لتوليد المتاهة
   function dfs(x,y){
-    const dirs = [[0,1],[1,0],[0,-1],[-1,0]].sort(()=>Math.random()-0.5);
+    const dirs=[[0,1],[1,0],[0,-1],[-1,0]].sort(()=>Math.random()-0.5);
     for(const [dx,dy] of dirs){
-      const nx = x + dx*2;
-      const ny = y + dy*2;
+      const nx=x+dx*2, ny=y+dy*2;
       if(nx>=0 && ny>=0 && nx<size && ny<size && grid[ny][nx]===1){
         grid[y+dy][x+dx]=0;
         grid[ny][nx]=0;
@@ -71,16 +69,11 @@ function generateMaze(size){
       }
     }
   }
+  grid[0][0]=0; dfs(0,0); grid[size-1][size-1]=0;
 
-  grid[0][0]=0;
-  dfs(0,0);
-  grid[size-1][size-1]=0;
-
-  // التأكد من وجود مسار باستخدام BFS
   function hasPathBFS(grid){
-    const visited = Array.from({length:size},()=>Array(size).fill(false));
-    const queue = [[0,0]];
-    visited[0][0]=true;
+    const visited=Array.from({length:size},()=>Array(size).fill(false));
+    const queue=[[0,0]]; visited[0][0]=true;
     const moves=[[0,1],[1,0],[0,-1],[-1,0]];
     while(queue.length>0){
       const [x,y]=queue.shift();
@@ -88,8 +81,7 @@ function generateMaze(size){
       for(const [dx,dy] of moves){
         const nx=x+dx, ny=y+dy;
         if(nx>=0 && ny>=0 && nx<size && ny<size && !visited[ny][nx] && grid[ny][nx]===0){
-          visited[ny][nx]=true;
-          queue.push([nx,ny]);
+          visited[ny][nx]=true; queue.push([nx,ny]);
         }
       }
     }
@@ -97,70 +89,61 @@ function generateMaze(size){
   }
 
   while(!hasPathBFS(grid)){
-    const randX = Math.floor(Math.random()*size);
-    const randY = Math.floor(Math.random()*size);
+    const randX=Math.floor(Math.random()*size);
+    const randY=Math.floor(Math.random()*size);
     grid[randY][randX]=0;
   }
-
   return grid;
 }
 
-// ===== Rendering =====
+// ===== Render Maze =====
 function renderMaze(grid){
   mazeContainer.innerHTML='';
-  mazeContainer.style.gridTemplateColumns = `repeat(${grid.length},50px)`;
-  mazeContainer.style.gridTemplateRows = `repeat(${grid.length},50px)`;
+  mazeContainer.style.gridTemplateColumns = `repeat(${grid.length},1fr)`;
+  mazeContainer.style.gridTemplateRows = `repeat(${grid.length},1fr)`;
   for(let y=0;y<grid.length;y++){
     for(let x=0;x<grid[y].length;x++){
-      const cell = document.createElement('div');
+      const cell=document.createElement('div');
       cell.classList.add('cell');
       if(grid[y][x]===1) cell.classList.add('wall');
       if(playerPos.x===x && playerPos.y===y){
         cell.classList.add('player');
         cell.style.backgroundImage="url('images/catt.png')";
-        cell.style.backgroundSize="cover";
       }
       if(exitPos.x===x && exitPos.y===y){
         cell.classList.add('exit');
         cell.style.backgroundImage="url('images/food.png')";
-        cell.style.backgroundSize="cover";
       }
       mazeContainer.appendChild(cell);
     }
   }
 }
 
-// ===== Start level =====
+// ===== Start Level =====
 function startLevel(lvl){
-  mazeSize = 10 + Math.floor((lvl-1)/2); // زيادة الحجم تدريجيًا
+  mazeSize=10+Math.floor((lvl-1)/2);
   playerPos={x:0,y:0};
   exitPos={x:mazeSize-1,y:mazeSize-1};
-  levelDisplay.textContent = lvl;
-
-  currentGrid = generateMaze(mazeSize);
-
-  // تقليل الوقت تدريجيًا لزيادة الصعوبة
-  timeLeft = Math.max(60 - (lvl-1)*5, 15);
-  timeDisplay.textContent = timeLeft;
-
+  levelDisplay.textContent=lvl;
+  currentGrid=generateMaze(mazeSize);
+  timeLeft=Math.max(60-(lvl-1)*5,15);
+  timeDisplay.textContent=timeLeft;
   renderMaze(currentGrid);
   startTimer();
 }
 
-// ===== Player movement =====
+// ===== Player Movement =====
 function movePlayer(dx,dy){
-  const newX=playerPos.x+dx;
-  const newY=playerPos.y+dy;
+  const newX=playerPos.x+dx, newY=playerPos.y+dy;
   if(newX<0||newY<0||newX>=mazeSize||newY>=mazeSize) return;
   if(currentGrid[newY][newX]===1) return;
   playerPos={x:newX,y:newY};
   renderMaze(currentGrid);
-  if(playerPos.x===exitPos.x && playerPos.y===exitPos.y){
-    showEndCard(true);
-  }
+  if(playerPos.x===exitPos.x && playerPos.y===exitPos.y) showEndCard(true);
 }
 
-document.addEventListener('keydown',(e)=>{
+// ===== Keyboard Controls =====
+document.addEventListener('keydown',e=>{
   switch(e.key){
     case 'ArrowUp': movePlayer(0,-1); break;
     case 'ArrowDown': movePlayer(0,1); break;
@@ -169,38 +152,39 @@ document.addEventListener('keydown',(e)=>{
   }
 });
 
+// ===== Touch Controls =====
+let touchStart=null;
+mazeContainer.addEventListener('touchstart', e=>{ touchStart=e.touches[0]; });
+mazeContainer.addEventListener('touchend', e=>{
+  if(!touchStart) return;
+  const dx=e.changedTouches[0].clientX - touchStart.clientX;
+  const dy=e.changedTouches[0].clientY - touchStart.clientY;
+  if(Math.abs(dx)>Math.abs(dy)){ dx>0?movePlayer(1,0):movePlayer(-1,0); }
+  else { dy>0?movePlayer(0,1):movePlayer(0,-1); }
+  touchStart=null;
+});
+
 // ===== Timer =====
 function startTimer(){
   clearInterval(timer);
-  timer = setInterval(()=>{
-    timeLeft--;
-    timeDisplay.textContent = timeLeft;
-    if(timeLeft<=0){
-      clearInterval(timer);
-      showEndCard(false);
-    }
+  timer=setInterval(()=>{
+    timeLeft--; timeDisplay.textContent=timeLeft;
+    if(timeLeft<=0){ clearInterval(timer); showEndCard(false); }
   },1000);
 }
 
-// ===== End card =====
+// ===== End Card =====
 function showEndCard(won){
   clearInterval(timer);
   endCard.style.display='flex';
   if(won){
     endMessage.textContent=`Up to Level ${level+1}`;
     endActionBtn.textContent=`Level ${level+1}`;
-    endActionBtn.onclick=()=>{
-      level++;
-      endCard.style.display='none';
-      startLevel(level);
-    };
+    endActionBtn.onclick=()=>{ level++; endCard.style.display='none'; startLevel(level); };
   } else {
     endMessage.textContent='Hard Luck!';
     endActionBtn.textContent='Try Again';
-    endActionBtn.onclick=()=>{
-      endCard.style.display='none';
-      startLevel(level);
-    };
+    endActionBtn.onclick=()=>{ endCard.style.display='none'; startLevel(level); };
   }
 }
 
@@ -209,5 +193,5 @@ restartBtn.addEventListener('click',()=>{ startLevel(level); });
 myGamesBtn.addEventListener('click',()=>{ window.location.href="my-games.html"; });
 endMyGamesBtn.addEventListener('click',()=>{ window.location.href="my-games.html"; });
 
-// ===== Start game =====
+// ===== Start Game =====
 startLevel(level);

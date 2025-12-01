@@ -1,3 +1,4 @@
+
 /* ---------- Game configuration ---------- */
 const levels = [{target:5, speed:160},{target:8, speed:130},{target:12, speed:100},{target:18, speed:80},{target:25, speed:65}];
 let currentLevel=0, score=0, lives=3;
@@ -11,10 +12,6 @@ const bgContainer=document.getElementById("bg-snakes");
 
 /* ---------- Background emojis ---------- */
 const emojis = ["🐍","🍎","🍇","🍒","🍉","🍌","🍓","🥝","🥑","🍍","🍑","🍈"];
-
-
-
-// ثوابت الأماكن لكل رمز (مختلفة عن التانية)
 const positions = [
   {x:"5vw", y:"10vh"}, {x:"20vw", y:"15vh"}, {x:"35vw", y:"5vh"},
   {x:"50vw", y:"12vh"}, {x:"65vw", y:"20vh"}, {x:"80vw", y:"8vh"},
@@ -27,7 +24,6 @@ const positions = [
   {x:"10vw", y:"90vh"}, {x:"25vw", y:"85vh"}, {x:"40vw", y:"95vh"},
   {x:"55vw", y:"88vh"}, {x:"70vw", y:"92vh"}, {x:"85vw", y:"90vh"}
 ];
-
 function createFixedBackground(){
   bgContainer.innerHTML = "";
   for(let i=0;i<positions.length;i++){
@@ -37,7 +33,6 @@ function createFixedBackground(){
     span.style.left = positions[i].x;
     span.style.top = positions[i].y;
     span.style.fontSize = (20 + (i%5)*5) + "px";
-    // حركة صغيرة لكن ثابتة
     span.style.setProperty("--dx1","3px"); span.style.setProperty("--dy1","-2px");
     span.style.setProperty("--dx2","-3px"); span.style.setProperty("--dy2","2px");
     span.style.setProperty("--dx3","2px"); span.style.setProperty("--dy3","-3px");
@@ -46,7 +41,6 @@ function createFixedBackground(){
   }
 }
 createFixedBackground();
-
 
 /* ---------- HUD ---------- */
 const scoreEl=document.getElementById('score'), levelEl=document.getElementById('level'), targetEl=document.getElementById('target'), livesEl=document.getElementById('lives');
@@ -69,23 +63,97 @@ function drawBG(){ctx.fillStyle='#00151c';ctx.fillRect(0,0,W,H);for(let x=0;x<gr
 function draw(){drawBG();ctx.fillStyle='#ffd000';roundRect(ctx,food.x*box+box*0.12,food.y*box+box*0.12,box*0.76,box*0.76,6);ctx.fill();for(let i=snake.length-1;i>=0;i--){const s=snake[i];const x=s.x*box,y=s.y*box;if(i===0){const g=ctx.createLinearGradient(x,y,x+box,y+box);g.addColorStop(0,'#00ffff');g.addColorStop(1,'#ff00f0');ctx.fillStyle=g;roundRect(ctx,x+2,y+2,box-4,box-4,6);ctx.fill();ctx.strokeStyle='rgba(255,255,255,0.06)';ctx.strokeRect(x+1,y+1,box-2,box-2);}else{ctx.fillStyle=i%2===0?'#ff88ff':'#66f0ff';roundRect(ctx,x+3,y+3,box-6,box-6,5);ctx.fill();}}}
 function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
 function collision(head){if(head.x<0||head.x>=gridCount||head.y<0||head.y>=gridCount) return true;for(let i=0;i<snake.length;i++){if(head.x===snake[i].x&&head.y===snake[i].y) return true;}return false;}
-function tick(){let head={...snake[0]};if(dir==='UP') head.y--;if(dir==='DOWN') head.y++;if(dir==='LEFT') head.x--;if(dir==='RIGHT') head.x++;if(collision(head)){lives--;soundLoseLife();setHUD();if(lives<=0){stopGame();soundGameOver();showModal('Game Over',`Your score: ${score}`,[{txt:'Restart',cb:()=>{closeModal();restartFull();}},{txt:'Back to My Games',cb:()=>{window.location.href='my-games.html';}}]);return;}else{stopGame();showModal('You Lost a Life',`Lives left: ${lives}`,[{txt:'Try Again',cb:()=>{closeModal();startLevel(currentLevel);}},{txt:'Quit',cb:()=>{closeModal();restartFull();}}]);return;}}if(head.x===food.x&&head.y===food.y){snake.unshift(head);score++;soundEat();placeFood();setHUD();if(score>=levels[currentLevel].target){stopGame();soundLevelUp();const isLast=currentLevel>=levels.length-1;showModal(isLast?'You Beat All Levels!':`Level ${currentLevel+1} Completed!`,`Score: ${score} • Lives: ${lives}`,isLast?[{txt:'Restart',cb:()=>{closeModal();restartFull();}},{txt:'Back to My Games',cb:()=>{window.location.href='my-games.html';}}]:[{txt:'Next Level',cb:()=>{closeModal();currentLevel++;startLevel(currentLevel,false);}},{txt:'Replay Level',cb:()=>{closeModal();startLevel(currentLevel,false);}}]);return;}}else{snake.pop();snake.unshift(head);}draw();}
+
+function tick(){
+    let head={...snake[0]};
+    if(dir==='UP') head.y--;
+    if(dir==='DOWN') head.y++;
+    if(dir==='LEFT') head.x--;
+    if(dir==='RIGHT') head.x++;
+    
+    if(collision(head)){
+        lives--;
+        soundLoseLife();
+        setHUD();
+        if(lives<=0){
+            stopGame();
+            soundGameOver();
+            showModal('Game Over',`Your score: ${score}`,[{txt:'Restart',cb:()=>{closeModal();restartFull();}},{txt:'Back to My Games',cb:()=>{window.location.href='my-games.html';}}]);
+            return;
+        }else{
+            stopGame();
+            showModal('You Lost a Life',`Lives left: ${lives}`,[{txt:'Try Again',cb:()=>{closeModal();startLevel(currentLevel);}},{txt:'Quit',cb:()=>{closeModal();restartFull();}}]);
+            return;
+        }
+    }
+    
+    if(head.x===food.x&&head.y===food.y){
+        snake.unshift(head);
+        score++;
+        soundEat();
+        placeFood();
+        setHUD();
+        if(score>=levels[currentLevel].target){
+            stopGame();
+            soundLevelUp();
+            const isLast=currentLevel>=levels.length-1;
+            showModal(isLast?'You Beat All Levels!':`Level ${currentLevel+1} Completed!`,`Score: ${score} • Lives: ${lives}`,isLast?[{txt:'Restart',cb:()=>{closeModal();restartFull();}},{txt:'Back to My Games',cb:()=>{window.location.href='my-games.html';}}]:[{txt:'Next Level',cb:()=>{closeModal();currentLevel++;startLevel(currentLevel,false);}},{txt:'Replay Level',cb:()=>{closeModal();startLevel(currentLevel,false);}}]);
+            return;
+        }
+    }else{snake.pop();snake.unshift(head);}
+    draw();
+}
 
 function getIntervalForLevel(lvl){return levels[lvl].speed;}
 function startGameLoop(lvl){running=true;const speed=getIntervalForLevel(lvl);if(gameInterval) clearInterval(gameInterval);gameInterval=setInterval(tick,speed);}
 function stopGame(){running=false;if(gameInterval){clearInterval(gameInterval);gameInterval=null;}}
-function startLevel(lvl=0,resetScore=true){currentLevel=lvl;if(resetScore) score=0;initLevel(resetScore);setHUD();startGameLoop(currentLevel);}
-function restartFull(){currentLevel=0;score=0;lives=3;initLevel(true);startGameLoop(0);closeModal();}
+function startLevel(lvl=0,resetScore=true){currentLevel=lvl;if(resetScore) score=0;initLevel(resetScore);startGameLoop(lvl);}
+function restartFull(){currentLevel=0;score=0;lives=3;initLevel(true);startGameLoop(0);}
 
-function showModal(title,msg,buttons){modalArea.style.display='flex';modalTitle.textContent=title;modalMsg.textContent=msg;modalScore.textContent=score;modalLives.textContent=lives;modalBtns.innerHTML='';buttons.forEach(b=>{const btn=document.createElement('button');btn.className='btn';btn.textContent=b.txt;btn.style.minWidth='120px';btn.addEventListener('click',b.cb);modalBtns.appendChild(btn);});}
+/* ---------- Modal ---------- */
+function showModal(title,msg,buttons=[]){
+  modalTitle.textContent=title;
+  modalMsg.textContent=msg;
+  modalScore.textContent=score;
+  modalLives.textContent=lives;
+  modalBtns.innerHTML='';
+  buttons.forEach(b=>{
+    const btn=document.createElement('button');
+    btn.className='btn';
+    btn.textContent=b.txt;
+    btn.onclick=b.cb;
+    modalBtns.appendChild(btn);
+  });
+  modalArea.style.display='flex';
+}
 function closeModal(){modalArea.style.display='none';}
 
-window.addEventListener('keydown',(e)=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault();if(e.key==='ArrowUp'&&dir!=='DOWN') dir='UP';if(e.key==='ArrowDown'&&dir!=='UP') dir='DOWN';if(e.key==='ArrowLeft'&&dir!=='RIGHT') dir='LEFT';if(e.key==='ArrowRight'&&dir!=='LEFT') dir='RIGHT';if(e.key===' '){togglePause();}});
-pauseBtn.addEventListener('click',()=>{togglePause();});
-restartBtn.addEventListener('click',()=>{restartFull();});
-myGamesBtn.addEventListener('click',()=>{window.location.href='my-games.html';});
-function togglePause(){if(running){stopGame();pauseBtn.textContent='Resume';}else{startGameLoop(currentLevel);pauseBtn.textContent='Pause';}}
+/* ---------- Input ---------- */
+document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowUp'&&dir!=='DOWN') dir='UP';
+    if(e.key==='ArrowDown'&&dir!=='UP') dir='DOWN';
+    if(e.key==='ArrowLeft'&&dir!=='RIGHT') dir='LEFT';
+    if(e.key==='ArrowRight'&&dir!=='LEFT') dir='RIGHT';
+});
+let touchStartX=0,touchStartY=0;
+document.addEventListener('touchstart',e=>{const t=e.touches[0];touchStartX=t.clientX;touchStartY=t.clientY;});
+document.addEventListener('touchend',e=>{
+    const t=e.changedTouches[0];
+    const dx=t.clientX-touchStartX;
+    const dy=t.clientY-touchStartY;
+    if(Math.abs(dx)>Math.abs(dy)){
+        if(dx>0&&dir!=='LEFT') dir='RIGHT';
+        else if(dx<0&&dir!=='RIGHT') dir='LEFT';
+    }else{
+        if(dy>0&&dir!=='UP') dir='DOWN';
+        else if(dy<0&&dir!=='DOWN') dir='UP';
+    }
+});
 
-initLevel(true);
+/* ---------- Buttons ---------- */
+pauseBtn.addEventListener('click',()=>{if(running){stopGame();pauseBtn.textContent='Resume';}else{startGameLoop(currentLevel);pauseBtn.textContent='Pause';}});
+restartBtn.addEventListener('click',()=>{stopGame();restartFull();});
+myGamesBtn.addEventListener('click',()=>{window.location.href='my-games.html';});
+
+/* ---------- Init ---------- */
 startLevel(0,true);
-window.restartGame=restartFull;

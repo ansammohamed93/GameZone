@@ -9,13 +9,19 @@ html,body{
     height:100%;
     margin:0;
     font-family:Segoe UI,system-ui,Arial;
-    background:linear-gradient(135deg,#014141,rgb(127, 4, 127));overflow:hidden;color:#fff}
+    background:linear-gradient(135deg,#014141,rgb(127, 4, 127));
+    overflow:hidden;
+    color:#fff;
+}
 body::before{
   content:"";
   position:fixed;
   inset:-20%;
   background:radial-gradient(circle at 10% 20%,rgba(0,255,255,0.08),transparent 10%),radial-gradient(circle at 80% 60%,rgba(255,0,255,0.05),transparent 12%);
-  filter: blur(30px);z-index:0;pointer-events:none;animation: drift 12s linear infinite;
+  filter: blur(30px);
+  z-index:0;
+  pointer-events:none;
+  animation: drift 12s linear infinite;
 }
 @keyframes drift{0%{transform:translateY(0)}50%{transform:translateY(-6%)}100%{transform:translateY(0)}}
 
@@ -57,28 +63,37 @@ h1{margin:6px 0 2px 0;font-size:2rem;text-shadow:0 0 16px var(--accent2),0 0 8px
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:12px}
+    gap:12px
+}
 #canvas{
     background:linear-gradient(180deg,#03162a,#041a2d);
     border-radius:10px;
-    box-shadow:0 0 20px rgba(0,255,255,0.06) inset,0 0 50px rgba(255,0,255,0.02);display:block}
-.controls{display:flex;
+    box-shadow:0 0 20px rgba(0,255,255,0.06) inset,0 0 50px rgba(255,0,255,0.02);
+    display:block
+}
+.controls{
+    display:flex;
     gap:10px;
-    align-items:center}
-.btn{background:linear-gradient(90deg,var(--accent1),var(--accent2));
+    align-items:center
+}
+.btn{
+    background:linear-gradient(90deg,var(--accent1),var(--accent2));
     color:#001;
-     padding:10px 14px;
-     border-radius:10px;
-     border:none;
-     font-weight:700;
-     cursor:pointer;
-     box-shadow:0 6px 22px rgba(0,0,0,0.5),0 0 18px rgba(0,255,255,0.06);
-     transition:transform .12s}
+    padding:10px 14px;
+    border-radius:10px;
+    border:none;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 6px 22px rgba(0,0,0,0.5),0 0 18px rgba(0,255,255,0.06);
+    transition:transform .12s
+}
 .btn:hover{transform:scale(1.04)}
-.ghost{background:transparent;color:var(--accent1);
+.ghost{
+    background:transparent;color:var(--accent1);
     border:1px solid rgba(255,255,255,0.06);
     padding:8px 12px;
-    border-radius:10px}
+    border-radius:10px
+}
 
 .modal{
   position:fixed;
